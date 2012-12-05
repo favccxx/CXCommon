@@ -11,6 +11,22 @@ import com.itccxx.core.common.exception.InvalidParameter;
 public class SqlBuildUtil {
 	
 	/**
+	 * 根据原有的SQL构建分页条件(如使用Oracle数据库，应该原sql语句指定指定唯一的排序条件)
+	 * @param sql sql查询条件
+	 * @param startIndex 当前索引
+	 * @param pageSize 每页大小
+	 * @return
+	 */
+	public static String buildPagingSQL(String sql,int startIndex,int pageSize){
+		startIndex = startIndex > 0 ? startIndex : 1;
+		//如果需要查询的结果数量是大于0的，则装配成分页形式，否则，不分页，全部查询
+		if(pageSize > 0){
+			sql = "SELECT * FROM (SELECT T1.*, ROWNUM RN FROM (" + sql + ") T1 WHERE ROWNUM < " + (pageSize + startIndex) + ") T WHERE T.RN >= " + startIndex;
+		}
+		return sql;
+	}
+	
+	/**
 	 * 构建查询字符串类型的单值查询条件
 	 * @param whereClause 原有的where条件
 	 * @param relationType 关联类型，来自RelationType中的常量
@@ -55,20 +71,20 @@ public class SqlBuildUtil {
 	 * @throws InvalidParameter
 	 */
 	public static String addDateTimeCondition(String whereClause,String propertyName,String startDate,String endDate) throws InvalidParameter{
-		if(Utils.isEmpty(propertyName)){
+		if(StringHelper.isEmpty(propertyName)){
 			throw new InvalidParameter("无效的参数：" + propertyName);
 		}
 		StringBuffer sb = new StringBuffer();
-		if(Utils.isEmpty(whereClause)){
+		if(StringHelper.isEmpty(whereClause)){
 			sb.append(whereClause);
 		}
-		if(!Utils.isEmpty(startDate)){
+		if(!StringHelper.isEmpty(startDate)){
 			sb.append(" and ")
 			.append(propertyName)
 			.append(" >= ")
 			.append(startDate);
 		}
-		if(!Utils.isEmpty(endDate)){
+		if(!StringHelper.isEmpty(endDate)){
 			sb.append(" and ")
 			.append(propertyName)
 			.append(" <= ")
@@ -86,7 +102,7 @@ public class SqlBuildUtil {
 	 */
 	public static String addSingleAndCondition(String whereClause,String propertyName,String propertyValue){
 		StringBuffer sb = new StringBuffer();
-		if(!Utils.isEmpty(whereClause)){
+		if(!StringHelper.isEmpty(whereClause)){
 			sb.append(whereClause);
 		}
 		sb.append(" and ").append(propertyName).append(" = '").append(propertyValue).append("'");
@@ -105,10 +121,10 @@ public class SqlBuildUtil {
 	 */
 	public static String addMulOrCondition(String whereClause,String relationType,String propertyName,String operateType,String propertyValue,String separator){
 		StringBuffer sb = new StringBuffer();
-		if(!Utils.isEmpty(whereClause)){
+		if(!StringHelper.isEmpty(whereClause)){
 			sb.append(whereClause);
 		}
-		if(Utils.isEmpty(separator)){
+		if(StringHelper.isEmpty(separator)){
 			separator = ",";
 		}
 		sb.append(relationType).append(" (");

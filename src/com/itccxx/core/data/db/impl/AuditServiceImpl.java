@@ -14,9 +14,9 @@ import com.itccxx.core.common.exception.AuditException;
 import com.itccxx.core.common.exception.InvalidParameter;
 import com.itccxx.core.common.util.DBUtil;
 import com.itccxx.core.common.util.SqlBuildUtil;
-import com.itccxx.core.common.util.Utils;
-import com.itccxx.core.data.db.inf.AuditService;
+import com.itccxx.core.common.util.StringHelper;
 import com.itccxx.core.data.db.model.AuditInfo;
+import com.itccxx.core.data.db.service.AuditService;
 
 public class AuditServiceImpl implements AuditService {
 	
@@ -28,9 +28,9 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public void addAudit(AuditInfo auditInfo) throws AuditException {
-		if(Utils.isEmpty(auditInfo.getUserId()) || 
-				Utils.isEmpty(auditInfo.getModule_name()) || 
-				Utils.isEmpty(auditInfo.getFunction_name()) || 
+		if(StringHelper.isEmpty(auditInfo.getUserId()) || 
+				StringHelper.isEmpty(auditInfo.getModule_name()) || 
+				StringHelper.isEmpty(auditInfo.getFunction_name()) || 
 				auditInfo.getAudit_date() == null){
 			//TODO: 抛出参数不正确的异常信息
 		}
@@ -74,7 +74,7 @@ public class AuditServiceImpl implements AuditService {
 				 strEndDate = df.format(endDate);
 			 }
 			 String sql = "select * from "+TABLENAME;
-			 if(!Utils.isEmpty(userId) && !Utils.isEmpty(moduleName) && !Utils.isEmpty(operation) && startDate!= null && endDate!=null){
+			 if(!StringHelper.isEmpty(userId) && !StringHelper.isEmpty(moduleName) && !StringHelper.isEmpty(operation) && startDate!= null && endDate!=null){
 				 sql += " where ";
 			 }
 			 sql = SqlBuildUtil.addSingleAndCondition(sql, "MODULE_NAME", moduleName);

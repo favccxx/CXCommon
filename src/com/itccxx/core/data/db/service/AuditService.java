@@ -1,4 +1,4 @@
-package com.itccxx.core.data.db.inf;
+package com.itccxx.core.data.db.service;
 
 import java.util.Date;
 
